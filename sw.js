@@ -1,4 +1,4 @@
-const V='cc-v4',OCR='cc-ocr',SHELL=['./','index.html','etapa1.js','etapa1b.js','manifest.webmanifest','icon.svg'];
+const V='cc-v5',OCR='cc-ocr',SHELL=['./','index.html','etapa1.js','etapa1b.js','etapa1c.js','manifest.webmanifest','icon.svg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!==OCR).map(x=>caches.delete(x)))).then(()=>clients.claim())));
 self.addEventListener('fetch',e=>{
