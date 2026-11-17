@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Iconos CocoaCacao</title>
+<body style="font-family:system-ui;padding:16px;background:#fff;color:#222">
+<h2>Iconos CocoaCacao</h2>
+<p>Toca cada botón. Los archivos se guardan en Descargas.</p>
+<button id="b1" style="font-size:18px;padding:14px;width:100%;margin:8px 0">Descargar icon-192.png</button>
+<button id="b2" style="font-size:18px;padding:14px;width:100%;margin:8px 0">Descargar icon-512.png</button>
+<script>
+function dib(n){const c=document.createElement('canvas');c.width=c.height=n;const x=c.getContext('2d');
+x.fillStyle='#2B1810';x.fillRect(0,0,n,n);
+x.beginPath();x.arc(n/2,n/2,n*0.30,0,7);x.fillStyle='#FFFDF8';x.fill();
+x.lineWidth=n*0.06;x.strokeStyle='#B0124F';x.stroke();return c}
+function baja(n){dib(n).toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='icon-'+n+'.png';a.click()},'image/png')}
+b1.onclick=()=>baja(192);b2.onclick=()=>baja(512);
+</script></body></html>
