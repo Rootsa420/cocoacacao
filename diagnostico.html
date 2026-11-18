@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnóstico</title>
+<body style="font-family:system-ui;padding:14px;font-size:16px;line-height:1.4">
+<h2>Diagnóstico CocoaCacao</h2><div id="o">Revisando…</div>
+<button id="fz" style="font-size:17px;padding:14px;width:100%;margin-top:12px">Forzar actualización (no borra tus datos)</button>
+<script>
+document.getElementById('fz').onclick=async()=>{try{for(const k of await caches.keys())await caches.delete(k);for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister()}catch(e){}location.href='index.html?v='+Date.now()};
+(async()=>{
+const o=document.getElementById('o');let h='';
+const add=(ok,t)=>{h+='<p>'+(ok?'✅ ':'❌ ')+t+'</p>';o.innerHTML=h};
+const get=async u=>{try{const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'});return{s:r.status,t:r.ok?await r.text():''}}catch(e){return{s:'sin conexión',t:''}}};
+const idx=await get('index.html');
+add(idx.s==200,'index.html: estado '+idx.s);
+for(const f of ['etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js']){
+ const linked=idx.t.includes('src="'+f+'"');
+ add(linked,'index.html enlaza '+f+': '+(linked?'sí':'NO, falta esa línea'));
+ const r=await get(f);
+ if(r.s!=200){add(false,f+': no existe (estado '+r.s+')');continue}
+ let sin='sin errores de sintaxis',ok=true;
+ try{new Function(r.t)}catch(e){ok=false;sin='ERROR de sintaxis: '+e.message}
+ const fin=r.t.trim().slice(-12).replace(/</g,'&lt;');
+ add(ok,f+': '+r.t.length+' caracteres, termina en «'+fin+'», '+sin);
+}
+const sw=await get('sw.js');
+add(sw.s==200,'sw.js primera línea: '+sw.t.split('\n')[0].slice(0,70));
+add(sw.t.includes('etapa1d.js'),'sw.js menciona etapa1d.js');
+try{add(true,'Cachés guardadas en el teléfono: '+(await caches.keys()).join(', '))}catch(e){}
+})();
+</script></body></html>
