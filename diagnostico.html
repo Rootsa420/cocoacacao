@@ -9,21 +9,26 @@ document.getElementById('fz').onclick=async()=>{try{for(const k of await caches.
 const o=document.getElementById('o');let h='';
 const add=(ok,t)=>{h+='<p>'+(ok?'✅ ':'❌ ')+t+'</p>';o.innerHTML=h};
 const get=async u=>{try{const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'});return{s:r.status,t:r.ok?await r.text():''}}catch(e){return{s:'sin conexión',t:''}}};
+const need=['etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js','etapa2a.js','etapa2b.js','etapa2c.js','etapa2e.js','etapa2f.js','etapa2g.js','etapa2h.js'];
 const idx=await get('index.html');
 add(idx.s==200,'index.html: estado '+idx.s);
-for(const f of ['etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js']){
- const linked=idx.t.includes('src="'+f+'"');
- add(linked,'index.html enlaza '+f+': '+(linked?'sí':'NO, falta esa línea'));
+const linked=[...idx.t.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]);
+const nolink=need.filter(f=>!linked.includes(f));
+add(!nolink.length,'Líneas que faltan en index.html: '+(nolink.join(', ')||'ninguna'));
+add(linked.join()==need.filter(f=>linked.includes(f)).join(),'Orden de las líneas en index.html: '+(linked.join()==need.filter(f=>linked.includes(f)).join()?'correcto':'incorrecto, deben ir en el orden de la lista'));
+for(const f of need){
  const r=await get(f);
- if(r.s!=200){add(false,f+': no existe (estado '+r.s+')');continue}
- let sin='sin errores de sintaxis',ok=true;
- try{new Function(r.t)}catch(e){ok=false;sin='ERROR de sintaxis: '+e.message}
- const fin=r.t.trim().slice(-12).replace(/</g,'&lt;');
- add(ok,f+': '+r.t.length+' caracteres, termina en «'+fin+'», '+sin);
+ if(r.s!=200){add(false,f+': NO EXISTE en el repositorio (estado '+r.s+')');continue}
+ let ok=true,m='sin errores de sintaxis';
+ try{new Function(r.t)}catch(e){ok=false;m='ERROR de sintaxis: '+e.message}
+ add(ok,f+': '+r.t.length+' caracteres, termina en «'+r.t.trim().slice(-6).replace(/</g,'&lt;')+'», '+m);
 }
 const sw=await get('sw.js');
-add(sw.s==200,'sw.js primera línea: '+sw.t.split('\n')[0].slice(0,70));
-add(sw.t.includes('etapa1d.js'),'sw.js menciona etapa1d.js');
+add(sw.s==200,'sw.js primera línea: '+sw.t.split('\n')[0].slice(0,32));
+const m=sw.t.match(/SHELL=\[([^\]]*)\]/),shell=m?[...m[1].matchAll(/'([^']+)'/g)].map(x=>x[1]).filter(x=>x!='./'):[];
+const sf=need.filter(f=>!shell.includes(f));
+add(!sf.length,'Archivos que faltan en la lista de sw.js: '+(sf.join(', ')||'ninguno'));
+for(const f of shell){const r=await get(f);if(r.s!=200)add(false,'sw.js pide '+f+' pero no existe: la actualización se cancela')}
 try{add(true,'Cachés guardadas en el teléfono: '+(await caches.keys()).join(', '))}catch(e){}
 })();
 </script></body></html>
