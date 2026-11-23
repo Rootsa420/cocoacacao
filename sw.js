@@ -1,4 +1,4 @@
-const V='cc-v13',OCR='cc-ocr',SHELL=['./','index.html','etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js','etapa2a.js','etapa2b.js','etapa2c.js','etapa2e.js','etapa2f.js','etapa2g.js','etapa2h.js','etapa2i.js','manifest.webmanifest','icon.svg'];
+const V='cc-v14',OCR='cc-ocr',SHELL=['./','index.html','etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js','etapa2a.js','etapa2b.js','etapa2c.js','etapa2e.js','etapa2f.js','etapa2g.js','etapa2h.js','etapa2i.js','etapa3a.js','manifest.webmanifest','icon.svg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!==OCR).map(x=>caches.delete(x)))).then(()=>clients.claim())));
 self.addEventListener('fetch',e=>{
