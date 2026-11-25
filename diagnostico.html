@@ -9,7 +9,7 @@ document.getElementById('fz').onclick=async()=>{try{for(const k of await caches.
 const o=document.getElementById('o');let h='';
 const add=(ok,t)=>{h+='<p>'+(ok?'✅ ':'❌ ')+t+'</p>';o.innerHTML=h};
 const get=async u=>{try{const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'});return{s:r.status,t:r.ok?await r.text():''}}catch(e){return{s:'sin conexión',t:''}}};
-const need=['etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js','etapa2a.js','etapa2b.js','etapa2c.js','etapa2e.js','etapa2f.js','etapa2g.js','etapa2h.js','etapa2i.js','etapa3a.js','etapa3b.js','etapa3c.js'];
+const need=['etapa1.js','etapa1b.js','etapa1c.js','etapa1d.js','etapa2a.js','etapa2b.js','etapa2c.js','etapa2e.js','etapa2f.js','etapa2g.js','etapa2h.js','etapa2i.js','etapa3a.js','etapa3b.js','etapa3c.js','etapa3d.js','etapa3e.js'];
 const idx=await get('index.html');
 add(idx.s==200,'index.html: estado '+idx.s);
 const linked=[...idx.t.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]);
